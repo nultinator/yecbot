@@ -1,6 +1,7 @@
 
 
 mod southx_api; 
+mod xeggex_api;
 
 #[tokio::main]
 async fn main() {
@@ -28,10 +29,13 @@ async fn main() {
                 println!("Averages \n{:?}", yec_average);
             },
             "3" => {
-                let orderbook = southx_api::get_orderbook("yec", "btc")
-                        .await;
-                println!("Ask/Bid\n{:?}", orderbook);
-                //println!("Orderbook \n{:?}", orderbook[0]);
+                let southx_orderbook = southx_api::get_orderbook("yec", "btc")
+                    .await;
+                println!("SOUTHX\n{:?}", southx_orderbook);
+
+                let xeggex_orderbook = xeggex_api::get_orderbook("YEC", "BTC")
+                    .await;
+                println!("XEGGEX\n{:?}", xeggex_orderbook);
             },
             "4" => southx_api::find_arb_opportunity("yec").await,
             "5" => {
