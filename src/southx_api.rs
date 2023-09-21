@@ -8,6 +8,24 @@ use std::collections::HashMap;
 const BASE_URL: &str = "https://market.southxchange.com/api/v4";
 const PAIRS: [&str; 2] = ["btc", "usdt"];
 
+
+struct Coin {
+    ticker: String,
+    ask: f32,
+    bid: f32,
+}
+
+impl Coin {
+    pub async fn get_ask(&self, ref_currency: &str) -> f32 {
+        let ask = price_check(&self.ticker, ref_currency).await;
+        return ask["ask"] as f32;
+    }
+    pub async fn get_bid(&self, ref_currency: &str) -> f32 {
+        let ask = price_check(&self.ticker, ref_currency).await;
+        return ask["bid"] as f32;
+    }
+}
+
 pub async fn price_check(currency: &str, ref_currency: &str) -> HashMap<String, f64> {
     let mut map = HashMap::new();
     let url = format!("{}/price/{}/{}", BASE_URL, currency,ref_currency);
@@ -108,10 +126,11 @@ pub async fn get_orderbook(currency: &str, ref_currency: &str) -> HashMap<String
 }
 
 pub async fn find_arb_opportunity(coin: &str) {
-    let all_prices = get_all_prices(coin)
+    let mut all_prices = get_all_prices(coin)
         .await;
-    let btc_price = all_prices["btc"].clone();
-    all_prices.insert()
+    let btc_price = all_prices["btc"].clone()["btc"];
+    let btc_usd_price = coin_to_usdt("btc").await;
+    //tc_price".to_string(), true_price);
     for price in all_prices.iter() {
         println!("{:?}", price);
     }
